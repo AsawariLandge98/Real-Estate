@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-// Aurum & Co. mock data — Delhi-NCR listings, testimonials, videos, leads.
+// Evoque Assets mock data — Delhi-NCR listings, testimonials, videos, leads.
 
 const PROPERTIES_SEED = [
   {

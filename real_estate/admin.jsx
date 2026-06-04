@@ -2,7 +2,7 @@
 // Admin panel — login, dashboard, properties table, add property form, leads inbox.
 
 function AdminLogin({ onLogin, onExit, brandName }) {
-  const [email, setEmail] = useState("admin@aurum.co.in");
+  const [email, setEmail] = useState("admin@evoqueassets.com");
   const [pass, setPass] = useState("aurum2026");
   const submit = (e) => { e.preventDefault(); onLogin(); };
   return (

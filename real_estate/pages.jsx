@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-// Aurum & Co. — Additional pages: About, Contact, Careers, Insights (Blog)
+// Evoque Assets — Additional pages: About, Contact, Careers, Insights (Blog)
 
 /* ================================================================
    ABOUT PAGE
@@ -78,7 +78,7 @@ function AboutPage({ onContact }) {
       {/* Page Hero */}
       <section className="page-hero page-hero--navy">
         <div className="shell page-hero__inner">
-          <Reveal><span className="eyebrow eyebrow-light">— About Aurum & Co.</span></Reveal>
+          <Reveal><span className="eyebrow eyebrow-light">— About Evoque Assets</span></Reveal>
           <Reveal><h1 className="h-display">Built on the conviction that<br/> a fair deal is the <em>only</em> good deal.</h1></Reveal>
           <Reveal><p className="lede lede--light">We started in 2011 with one rule: never earn from both sides of a transaction. Fourteen years later, it's still the only rule that matters.</p></Reveal>
         </div>
@@ -93,7 +93,7 @@ function AboutPage({ onContact }) {
               <Reveal><span className="eyebrow">— Our story</span></Reveal>
               <Reveal><h2 className="h-section" style={{ marginTop: 16 }}>Noida, 2011. One rule, <em>no exceptions.</em></h2></Reveal>
               <Reveal><p className="lede" style={{ marginTop: 18 }}>Vikram Kapoor had spent eight years watching clients pay brokerage to agents who were simultaneously earning from the seller. He left Knight Frank to start a firm that would charge one side only, publish that fee before a single property was shown, and document every negotiation in writing.</p></Reveal>
-              <Reveal><p style={{ marginTop: 16, color: "var(--slate)", lineHeight: 1.8 }}>Aurum & Co. opened in a 400 sqft office in Sector 18. The first year was difficult — developers refused to list with us, because we wouldn't take the 3% they were paying other brokers. The second year, clients started returning. The third year, they started referring. By 2016, we had turned down three buyout offers from larger aggregators. We haven't taken one since.</p></Reveal>
+              <Reveal><p style={{ marginTop: 16, color: "var(--slate)", lineHeight: 1.8 }}>Evoque Assets opened in a 400 sqft office in Sector 18. The first year was difficult — developers refused to list with us, because we wouldn't take the 3% they were paying other brokers. The second year, clients started returning. The third year, they started referring. By 2016, we had turned down three buyout offers from larger aggregators. We haven't taken one since.</p></Reveal>
               <Reveal><p style={{ marginTop: 16, color: "var(--slate)", lineHeight: 1.8 }}>Today we are sixteen people. We cover Delhi-NCR exclusively. We have closed 1,248 deals, all in writing, all at disclosed fees. We have never charged brokerage from both sides of a single transaction.</p></Reveal>
             </div>
           </div>
@@ -165,7 +165,7 @@ function AboutPage({ onContact }) {
                 <div className="about-office__details">
                   <div><strong>Address</strong><span>4th Floor, Atrium Plaza, Sector 18, Noida 201301</span></div>
                   <div><strong>Phone</strong><span>+91 120 4567 890</span></div>
-                  <div><strong>Email</strong><span>hello@aurum.co.in</span></div>
+                  <div><strong>Email</strong><span>hello@evoqueassets.com</span></div>
                   <div><strong>Hours</strong><span>Mon–Sat 10:00–19:00 · Video calls daily 09:00–21:00</span></div>
                   <div><strong>RERA</strong><span>UP-RERA-12087-2024</span></div>
                 </div>
@@ -181,7 +181,7 @@ function AboutPage({ onContact }) {
               <div className="about-office__map">
                 <div className="about-office__map-inner">
                   <div className="pd__map__pin" />
-                  <div className="pd__map__label">Aurum & Co. · Sector 18, Noida</div>
+                  <div className="pd__map__label">Evoque Assets · Sector 18, Noida</div>
                   <div style={{ position: "absolute", bottom: 16, left: 20, fontFamily: "var(--ff-mono)", fontSize: 10, letterSpacing: ".14em", color: "var(--slate-soft)", textTransform: "uppercase" }}>Approximate location</div>
                 </div>
               </div>
@@ -197,158 +197,364 @@ function AboutPage({ onContact }) {
    CONTACT PAGE
    ================================================================ */
 function ContactPage() {
-  const [form, setForm] = useState({ name: "", phone: "", email: "", service: "buy", message: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", service: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [activeService, setActiveService] = useState("");
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const submit = (e) => { e.preventDefault(); setSubmitted(true); };
 
-  const OFFICES = [
-    { city: "Noida (HQ)", address: "4th Floor, Atrium Plaza, Sector 18, Noida 201301", phone: "+91 120 4567 890", email: "noida@aurum.co.in", hours: "Mon–Sat · 10:00–19:00" },
-    { city: "Greater Noida", address: "B-12, Knowledge Park III, Greater Noida 201310", phone: "+91 120 4567 891", email: "gnida@aurum.co.in", hours: "Mon–Sat · 10:00–18:00" }
+  const SERVICES = [
+    { value: "buy",      emoji: "🏠", label: "Buy" },
+    { value: "rent",     emoji: "🔑", label: "Rent" },
+    { value: "sell",     emoji: "💰", label: "Sell" },
+    { value: "lease",    emoji: "🏢", label: "Lease" },
+    { value: "interior", emoji: "🛋", label: "Interiors" },
+    { value: "other",    emoji: "✦",  label: "Other" }
   ];
 
+  const FAQS = [
+    { q: "What is your brokerage fee?", a: "A fixed consultancy fee — agreed and signed before we show you a single property. We quote it in the first call, not after the deal." },
+    { q: "Do you charge the seller too?", a: "Never. We work exclusively for the buyer or tenant. Charging both sides is a structural conflict of interest we won't touch." },
+    { q: "How quickly do I get a shortlist?", a: "Residential: 3–5 working days. Commercial: 5–7 days. We show 4–6 verified properties, not 40 unverified portals listings." },
+    { q: "Which areas do you cover?", a: "All of Delhi-NCR — Noida, Greater Noida, Gurgaon (select sectors), Faridabad, and Delhi. Our deepest expertise is Noida and Greater Noida." },
+    { q: "Can you help me sell my property?", a: "Yes, on a case-by-case basis. We take sell-side mandates only when the property is fairly priced and title-clear. Call us to discuss." },
+    { q: "How does interior design work?", a: "Fixed quote, one project manager, ten-week delivery. Scope agreed in writing before a single item is ordered — no change-order surprises." }
+  ];
+
+  const [openFaq, setOpenFaq] = useState(null);
+
   return (
-    <div className="page-contact">
-      <section className="page-hero page-hero--navy">
-        <div className="shell page-hero__inner">
-          <Reveal><span className="eyebrow eyebrow-light">— Get in touch</span></Reveal>
-          <Reveal><h1 className="h-display">A 30-minute call. <em>No</em> pressure, no spam.</h1></Reveal>
-          <Reveal><p className="lede lede--light">Tell us what you're looking for — even if it's just "I'm not sure yet." We'll tell you honestly whether we can help, and if we can't, we'll tell you who can.</p></Reveal>
-        </div>
-      </section>
+    <div className="cpage">
 
-      <section className="section">
-        <div className="shell">
-          <div className="contact-layout">
-            {/* Form */}
-            <div className="contact-form-wrap">
-              {submitted ? (
-                <div className="contact-success">
-                  <div className="contact-success__icon">✓</div>
-                  <h2>We'll call you within 2 hours.</h2>
-                  <p>Your consultant will reach out on the number you've shared. No mass mailers, no follow-up spam — just a single call from a named person on our team.</p>
-                  <button className="btn btn--ghost" style={{ marginTop: 24 }} onClick={() => setSubmitted(false)}>Send another enquiry</button>
+      {/* ═══════════════════════════════════════
+          HERO — full-bleed split
+      ═══════════════════════════════════════ */}
+      <div className="cpage__hero">
+
+        {/* LEFT — dark info panel */}
+        <div className="cpage__left">
+          <div className="cpage__left-inner">
+
+            <Reveal>
+              <span className="cpage__eyebrow">— Get in touch</span>
+            </Reveal>
+
+            <Reveal>
+              <h1 className="cpage__headline">
+                Talk to us.<br />
+                <em>No pressure,</em><br />
+                no spam.
+              </h1>
+            </Reveal>
+
+            <Reveal>
+              <p className="cpage__tagline">
+                A free 30-minute consultation. Tell us what you need — we'll tell you honestly if we can help.
+              </p>
+            </Reveal>
+
+            {/* ── Contact details ── */}
+            <Reveal>
+              <div className="cpage__details">
+                <a href="tel:+919999999999" className="cpage__detail">
+                  <div className="cpage__detail-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.7 12.1 19.79 19.79 0 0 1 1.63 3.5 2 2 0 0 1 3.6 1.36h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="cpage__detail-label">Phone</div>
+                    <div className="cpage__detail-value">+91 99999 99999</div>
+                  </div>
+                </a>
+
+                <a href="mailto:info@evoqueassets.com" className="cpage__detail">
+                  <div className="cpage__detail-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="cpage__detail-label">Email</div>
+                    <div className="cpage__detail-value">info@evoqueassets.com</div>
+                  </div>
+                </a>
+
+                <div className="cpage__detail">
+                  <div className="cpage__detail-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="cpage__detail-label">Office</div>
+                    <div className="cpage__detail-value">Sector 18, Noida 201301</div>
+                  </div>
                 </div>
-              ) : (
-                <form className="contact-form" onSubmit={submit}>
-                  <h2 style={{ fontFamily: "var(--ff-serif)", fontSize: "clamp(24px,3vw,32px)", color: "var(--navy-deep)", marginBottom: 6 }}>Book a consultation</h2>
-                  <p style={{ color: "var(--slate)", marginBottom: 28, lineHeight: 1.6 }}>Fill this in and we'll call within 2 working hours. Or call us directly: <a href="tel:+911204567890" style={{ color: "var(--gold-deep)" }}>+91 120 4567 890</a></p>
 
-                  <div className="contact-form__row">
-                    <div className="contact-form__field">
-                      <label>Your name *</label>
-                      <input required value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Anjali Sharma" />
+                <div className="cpage__detail">
+                  <div className="cpage__detail-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                      <circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="cpage__detail-label">Hours</div>
+                    <div className="cpage__detail-value">Mon–Sat · 10:00 – 19:00</div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* ── Social links ── */}
+            <Reveal>
+              <div className="cpage__socials">
+                <a href="https://www.instagram.com/evoque.assets/" target="_blank" rel="noopener" className="cpage__social" aria-label="Instagram">
+                  <Icon.insta />
+                </a>
+                <a href="https://www.youtube.com/@EvoqueAssets" target="_blank" rel="noopener" className="cpage__social cpage__social--yt" aria-label="YouTube">
+                  <Icon.youtube />
+                </a>
+                <a href="https://www.facebook.com/evoqueassets/" target="_blank" rel="noopener" className="cpage__social cpage__social--fb" aria-label="Facebook">
+                  <Icon.facebook />
+                </a>
+                <a href="https://in.linkedin.com/company/evoque_assets" target="_blank" rel="noopener" className="cpage__social cpage__social--li" aria-label="LinkedIn">
+                  <Icon.linkedin />
+                </a>
+              </div>
+            </Reveal>
+
+          </div>
+
+          {/* decorative gold ring */}
+          <div className="cpage__ring cpage__ring--1" />
+          <div className="cpage__ring cpage__ring--2" />
+        </div>
+
+        {/* RIGHT — form */}
+        <div className="cpage__right">
+          <div className="cpage__form-card">
+
+            {submitted ? (
+              /* ── Success state ── */
+              <div className="cpage__success">
+                <div className="cpage__success-icon">
+                  <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+                    <circle cx="28" cy="28" r="26" stroke="var(--gold)" strokeWidth="2"/>
+                    <path d="M16 28l8 8 16-16" stroke="var(--gold)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <h2 className="cpage__success-h">We'll call within<br />2 working hours.</h2>
+                <p className="cpage__success-p">One named consultant will reach out on the number you shared. No bulk emails, no follow-up pressure.</p>
+                <div className="cpage__success-pills">
+                  <span>✓ Named consultant</span>
+                  <span>✓ Zero spam</span>
+                  <span>✓ Fee upfront</span>
+                </div>
+                <button className="cpage__reset-btn" onClick={() => setSubmitted(false)}>
+                  Send another enquiry →
+                </button>
+              </div>
+
+            ) : (
+              /* ── Form state ── */
+              <>
+                <div className="cpage__form-top">
+                  <span className="cpage__form-pill">Free consultation</span>
+                  <h2 className="cpage__form-h">Book a call</h2>
+                  <p className="cpage__form-sub">We respond within <strong>2 working hours</strong>, every day.</p>
+                </div>
+
+                <form className="cpage__form" onSubmit={submit}>
+
+                  {/* Service chips */}
+                  <div className="cpage__field">
+                    <label className="cpage__label">What are you looking for?</label>
+                    <div className="cpage__chips">
+                      {SERVICES.map((s) => (
+                        <button
+                          type="button"
+                          key={s.value}
+                          className={"cpage__chip" + (activeService === s.value ? " is-on" : "")}
+                          onClick={() => { setActiveService(s.value); set("service", s.value); }}
+                        >
+                          <span className="cpage__chip-emoji">{s.emoji}</span>
+                          {s.label}
+                        </button>
+                      ))}
                     </div>
-                    <div className="contact-form__field">
-                      <label>Phone *</label>
-                      <input required type="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="+91 98xxx xxxxx" />
+                  </div>
+
+                  {/* Name + Phone */}
+                  <div className="cpage__row2">
+                    <div className="cpage__field">
+                      <label className="cpage__label">Full name <span className="cpage__req">*</span></label>
+                      <input
+                        className="cpage__input"
+                        required
+                        value={form.name}
+                        onChange={(e) => set("name", e.target.value)}
+                        placeholder="Rahul Sharma"
+                      />
+                    </div>
+                    <div className="cpage__field">
+                      <label className="cpage__label">Phone <span className="cpage__req">*</span></label>
+                      <input
+                        className="cpage__input"
+                        required
+                        type="tel"
+                        value={form.phone}
+                        onChange={(e) => set("phone", e.target.value)}
+                        placeholder="+91 98765 43210"
+                      />
                     </div>
                   </div>
 
-                  <div className="contact-form__field">
-                    <label>Email (optional)</label>
-                    <input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="anjali@example.com" />
+                  {/* Email */}
+                  <div className="cpage__field">
+                    <label className="cpage__label">Email <span className="cpage__opt">optional</span></label>
+                    <input
+                      className="cpage__input"
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => set("email", e.target.value)}
+                      placeholder="rahul@example.com"
+                    />
                   </div>
 
-                  <div className="contact-form__field">
-                    <label>I'm looking to…</label>
-                    <select value={form.service} onChange={(e) => set("service", e.target.value)}>
-                      <option value="buy">Buy a property</option>
-                      <option value="rent">Rent a property</option>
-                      <option value="sell">Sell my property</option>
-                      <option value="lease">Lease commercial space</option>
-                      <option value="interior">Interior design</option>
-                      <option value="other">Something else</option>
-                    </select>
+                  {/* Message */}
+                  <div className="cpage__field">
+                    <label className="cpage__label">Message</label>
+                    <textarea
+                      className="cpage__input cpage__textarea"
+                      rows={3}
+                      value={form.message}
+                      onChange={(e) => set("message", e.target.value)}
+                      placeholder="Budget, locality, timeline — anything useful before the call."
+                    />
                   </div>
 
-                  <div className="contact-form__field">
-                    <label>Message</label>
-                    <textarea rows={4} value={form.message} onChange={(e) => set("message", e.target.value)} placeholder="Budget, locality preference, timeline — anything you want us to know before the call." />
-                  </div>
-
-                  <button className="btn btn--primary" type="submit" style={{ width: "100%", justifyContent: "center" }}>
-                    Send enquiry <span className="arrow"><Icon.arrow/></span>
+                  <button className="cpage__submit" type="submit">
+                    Send enquiry
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
+                      <path d="M5 12h14M13 5l7 7-7 7"/>
+                    </svg>
                   </button>
 
-                  <p style={{ fontSize: 12, color: "var(--slate-soft)", marginTop: 12, textAlign: "center", fontFamily: "var(--ff-mono)", letterSpacing: ".1em" }}>
-                    WE NEVER SHARE YOUR DETAILS WITH DEVELOPERS OR THIRD PARTIES.
-                  </p>
+                  <p className="cpage__privacy">🔒 Your details are never shared with developers or third parties.</p>
                 </form>
-              )}
-            </div>
-
-            {/* Side info */}
-            <div className="contact-side">
-              <div className="contact-side__block">
-                <h4>Response time</h4>
-                <p>We call back within <strong>2 working hours</strong>. For urgent queries, call directly — we pick up.</p>
-              </div>
-
-              {OFFICES.map((o) => (
-                <div key={o.city} className="contact-side__block">
-                  <h4>{o.city}</h4>
-                  <div className="contact-side__list">
-                    <div><span>Address</span><strong>{o.address}</strong></div>
-                    <div><span>Phone</span><a href={`tel:${o.phone.replace(/\s/g,"")}`}>{o.phone}</a></div>
-                    <div><span>Email</span><a href={`mailto:${o.email}`}>{o.email}</a></div>
-                    <div><span>Hours</span><strong>{o.hours}</strong></div>
-                  </div>
-                </div>
-              ))}
-
-              <div className="contact-side__block">
-                <h4>Video calls</h4>
-                <p>Available daily <strong>09:00–21:00</strong>. Google Meet or Zoom — your choice. We screen-share the shortlist so you can see everything we see.</p>
-              </div>
-
-              <div className="contact-side__pledge">
-                <h4>Our pledge to you</h4>
-                <ul>
-                  <li>One named consultant from first call to handover</li>
-                  <li>No spam, no cold follow-up after the call</li>
-                  <li>We'll tell you if we're not the right fit</li>
-                  <li>Fee disclosed before any property is shown</li>
-                </ul>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* FAQ */}
-      <section className="section" style={{ background: "var(--paper)" }}>
+      {/* ═══════════════════════════════════════
+          PROMISE STRIP
+      ═══════════════════════════════════════ */}
+      <section className="cpage__promise">
         <div className="shell">
-          <div className="s-head">
-            <div className="s-head__left">
-              <Reveal><span className="eyebrow">— Before you call</span></Reveal>
-              <Reveal><h2 className="h-section">Questions we get <em>every</em> week.</h2></Reveal>
-            </div>
-          </div>
-          <Reveal stagger className="faq-grid">
+          <Reveal stagger className="cpage__promise-grid">
             {[
-              { q: "What is your fee?", a: "A fixed consultancy fee, agreed and documented before we show you any property. The amount depends on the type of transaction — we quote it in the first conversation, not the last." },
-              { q: "Do you charge the seller too?", a: "Never. We work for the buyer or tenant exclusively. Charging both sides is structurally a conflict of interest, and we won't do it." },
-              { q: "How quickly can I get a shortlist?", a: "For residential: typically 3–5 working days after our first call. For commercial, 5–7 days. We show you four properties, not forty." },
-              { q: "Do you cover areas outside Noida?", a: "We cover all of Delhi-NCR: Noida, Greater Noida, Gurgaon (select sectors), Faridabad, and Delhi (select areas). Our core strength is Noida and Greater Noida." },
-              { q: "What if I want to sell my property?", a: "We take sell-side mandates on a case-by-case basis. We'll list only if we believe the property is fairly priced and clear of encumbrance. Call us to discuss." },
-              { q: "How does the interior design service work?", a: "Our in-house studio takes over at possession. Fixed quote, one project manager, ten-week delivery commitment. The scope is agreed in writing before a single item is ordered." }
-            ].map((item, i) => (
-              <div key={i} className="faq-item">
-                <h4>{item.q}</h4>
-                <p>{item.a}</p>
+              { icon: "⏱", title: "2-hr callback", body: "We call back within 2 working hours. For urgent matters, call directly — we pick up." },
+              { icon: "👤", title: "One consultant", body: "One named person from first call to final handover. No helpdesk, no handoffs." },
+              { icon: "📋", title: "Fee upfront",    body: "Fixed fee agreed and signed before we show you a single property. No surprises." },
+              { icon: "🤝", title: "No pressure",    body: "We'll tell you honestly if we're not right for your need — and who might be." }
+            ].map((p, i) => (
+              <div key={i} className="cpage__promise-item">
+                <span className="cpage__promise-icon">{p.icon}</span>
+                <h3 className="cpage__promise-title">{p.title}</h3>
+                <p className="cpage__promise-body">{p.body}</p>
               </div>
             ))}
           </Reveal>
         </div>
       </section>
+
+      {/* ═══════════════════════════════════════
+          FAQ
+      ═══════════════════════════════════════ */}
+      <section className="section cpage__faq">
+        <div className="shell">
+          <div className="cpage__faq-wrap">
+
+            {/* Left heading */}
+            <div className="cpage__faq-head">
+              <Reveal><span className="eyebrow">— Common questions</span></Reveal>
+              <Reveal><h2 className="h-section" style={{marginTop:14}}>Questions we hear <em>every</em> week.</h2></Reveal>
+              <Reveal>
+                <p style={{color:"var(--slate)", lineHeight:1.7, marginTop:16, fontSize:15}}>
+                  Thirteen years of consultations, distilled. If yours isn't here — just call us.
+                </p>
+              </Reveal>
+              <Reveal>
+                <a href="tel:+919999999999" className="btn btn--primary" style={{marginTop:28, display:"inline-flex"}}>
+                  Call us now <span className="arrow"><Icon.arrow/></span>
+                </a>
+              </Reveal>
+            </div>
+
+            {/* Right accordion */}
+            <div className="cpage__faq-list">
+              {FAQS.map((item, i) => (
+                <Reveal key={i}>
+                  <div
+                    className={"cpage__faq-item" + (openFaq === i ? " is-open" : "")}
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  >
+                    <div className="cpage__faq-q">
+                      <span>{item.q}</span>
+                      <span className="cpage__faq-toggle">{openFaq === i ? "−" : "+"}</span>
+                    </div>
+                    {openFaq === i && (
+                      <div className="cpage__faq-a">{item.a}</div>
+                    )}
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          LOCATION FOOTER STRIP
+      ═══════════════════════════════════════ */}
+      <div className="cpage__location">
+        <div className="shell cpage__location-inner">
+          <Reveal>
+            <div className="cpage__location-text">
+              <span className="eyebrow eyebrow-light" style={{marginBottom:12, display:"block"}}>— Find us</span>
+              <h3 className="cpage__location-h">Sector 18, Noida.<br/><em>Walk in anytime.</em></h3>
+              <p>4th Floor, Sector 18, Noida 201301<br/>Mon – Sat &nbsp;·&nbsp; 10:00 – 19:00</p>
+              <div className="cpage__location-btns">
+                <a href="tel:+919999999999" className="btn btn--gold">Call now <span className="arrow"><Icon.arrow/></span></a>
+                <a href="mailto:info@evoqueassets.com" className="btn btn--ghost-light">Email us</a>
+              </div>
+            </div>
+          </Reveal>
+          <Reveal>
+            <div className="cpage__map">
+              <div className="cpage__map-grid-bg"/>
+              <div className="cpage__map-pin">
+                <div className="cpage__map-dot"/>
+                <div className="cpage__map-pulse"/>
+                <div className="cpage__map-pulse cpage__map-pulse--2"/>
+              </div>
+              <div className="cpage__map-tag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="11" height="11"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Evoque Assets · Sector 18, Noida
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+
     </div>
   );
 }
 
-/* ================================================================
-   CAREERS PAGE
-   ================================================================ */
 function CareersPage({ onContact }) {
   const [openRole, setOpenRole] = useState(null);
   const [applyRole, setApplyRole] = useState(null);
@@ -546,7 +752,7 @@ function CareersPage({ onContact }) {
           <div>
             <Reveal><span className="eyebrow eyebrow-light">— Don't see a fit?</span></Reveal>
             <Reveal><h2>Drop us a note anyway.</h2></Reveal>
-            <Reveal><p>If you're exceptional at what you do and you believe in the way we work, write to us at <a href="mailto:careers@aurum.co.in" style={{ color: "var(--gold-soft)" }}>careers@aurum.co.in</a>. We keep unsolicited applications on file for six months.</p></Reveal>
+            <Reveal><p>If you're exceptional at what you do and you believe in the way we work, write to us at <a href="mailto:careers@evoqueassets.com" style={{ color: "var(--gold-soft)" }}>careers@evoqueassets.com</a>. We keep unsolicited applications on file for six months.</p></Reveal>
           </div>
         </div>
       </section>
@@ -825,4 +1031,259 @@ function InsightsPage() {
   );
 }
 
-Object.assign(window, { AboutPage, ContactPage, CareersPage, InsightsPage });
+
+/* ================================================================
+   SERVICES PAGE
+   ================================================================ */
+function ServicesPage({ onContact, onInventory }) {
+  const FULL_SERVICES = [
+    {
+      id: "s1",
+      num: "01",
+      title: "Buy a Property",
+      subtitle: "Residential & Commercial Purchase",
+      icon: "🏠",
+      img: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=70",
+      description: "We help you find, evaluate and negotiate the right property — not the one that earns us the highest commission. Every property on our list has been personally verified for clear title, fair pricing and structural soundness before we show it to you.",
+      features: [
+        "Personal shortlist of 4–6 verified properties (not 40 unverified ones)",
+        "Title search, encumbrance certificate and society-dues audit on every listing",
+        "Transparent price benchmarks — you see what comparable properties sold for",
+        "Negotiation support with every offer documented in writing",
+        "Accompaniment at registration; we stay until papers are in your hand",
+        "Post-possession support: society induction, utility transfer, possession punch list"
+      ],
+      cta: "Find a Property"
+    },
+    {
+      id: "s2",
+      num: "02",
+      title: "Sell a Property",
+      subtitle: "Residential & Commercial Sale",
+      icon: "💰",
+      img: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1200&q=70",
+      description: "We take sell-side mandates only when we believe the property is fairly priced and clear of encumbrance. You get a named consultant, a realistic pricing report, and a buyer pool built from 10+ years of NCR relationships — not a portal listing that disappears after 30 days.",
+      features: [
+        "Realistic valuation based on recent registrations in your sector, not portal aspirations",
+        "Professional video walkthrough for every listing we take",
+        "Buyer pool from our active client base — many deals close before public listing",
+        "Structured offer process — no verbal commitments, no side deals",
+        "One named consultant from mandate to registration",
+        "Fee disclosed and agreed before we begin"
+      ],
+      cta: "List Your Property"
+    },
+    {
+      id: "s3",
+      num: "03",
+      title: "Rent a Home",
+      subtitle: "Residential Rental",
+      icon: "🔑",
+      img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=70",
+      description: "Owner-direct listings reviewed for fair pricing, legal compliance and basic habitability. Our rent agreements are reviewed by our legal panel and are structured to protect both parties — not just to close the deal quickly.",
+      features: [
+        "Owner-direct listings — no sub-agents, no double-dealing",
+        "Video walkthroughs before you spend time on a site visit",
+        "Rent agreement template reviewed by our legal panel",
+        "Security deposit clause structured for return within 30 days on move-out",
+        "Maintenance responsibility split documented clearly in the agreement",
+        "We're available if disputes arise — not just at signing"
+      ],
+      cta: "Find a Rental"
+    },
+    {
+      id: "s4",
+      num: "04",
+      title: "Lease Commercial Space",
+      subtitle: "Office, Retail & Industrial",
+      icon: "🏢",
+      img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=70",
+      description: "Grade A offices on the Noida Expressway, retail frontage in Sector 18, and industrial units across Greater Noida — all verified, all directly from owners or their authorised representatives. We understand CAM charges, lock-in structures and fit-out handovers.",
+      features: [
+        "Grade A, Grade B and shell inventory across Noida Expressway, Sector 62 & 18",
+        "CAM charge breakdown provided for every listing before you visit",
+        "Lock-in period, escalation clause and exit fee analysis upfront",
+        "Fit-out specifications and DG backup percentage on every commercial listing",
+        "Support through lease deed drafting and stamp duty calculation",
+        "Renewal negotiation support when your term ends"
+      ],
+      cta: "Find Office Space"
+    },
+    {
+      id: "s5",
+      num: "05",
+      title: "Interior Design",
+      subtitle: "From Bare Shell to Move-In Ready",
+      icon: "🛋",
+      img: "https://images.unsplash.com/photo-1616593969747-4797dc75033e?auto=format&fit=crop&w=1200&q=70",
+      description: "Our in-house studio takes the home from bare-shell to lived-in. One fixed quote before we begin, one project manager for the duration, ten-week delivery commitment. We've completed 214+ homes across Delhi-NCR — and we'll show you every one of them before you decide.",
+      features: [
+        "Fixed quote — agreed and signed before any work begins, no change-order surprises",
+        "One dedicated project manager from design to handover",
+        "Ten-week delivery commitment (scope-dependent) with milestone updates",
+        "In-house modular kitchen and wardrobe design & execution",
+        "Curated vendor relationships for flooring, lighting and false ceiling",
+        "214+ completed homes across NCR — full portfolio available on request"
+      ],
+      cta: "Talk to the Studio"
+    },
+    {
+      id: "s6",
+      num: "06",
+      title: "Investment Advisory",
+      subtitle: "Pre-Leased & Capital Growth",
+      icon: "📈",
+      img: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&w=1200&q=70",
+      description: "For investors evaluating pre-leased commercial assets, under-construction residential, or plots on the Yamuna Expressway — we provide data-led analysis from our own transaction history, not broker optimism. We'll tell you the yield, the exit risk, and what the brochure won't.",
+      features: [
+        "Pre-leased commercial analysis: yield, lock-in risk, tenant quality, exit liquidity",
+        "Under-construction residential: RERA timeline check, builder track record, escrow status",
+        "Plot investment: YEIDA vs private developer comparison with registration data",
+        "Price-to-rent ratio analysis for your specific sector and budget",
+        "Risk factors documented alongside the upside case — not just in fine print",
+        "No incentive to recommend one property over another — fixed advisory fee"
+      ],
+      cta: "Talk to an Advisor"
+    }
+  ];
+
+  const [active, setActive] = useState(null);
+
+  return (
+    <div className="page-services">
+      {/* Hero */}
+      <section className="page-hero page-hero--navy">
+        <div className="shell page-hero__inner">
+          <Reveal><span className="eyebrow eyebrow-light">— Our Services</span></Reveal>
+          <Reveal><h1 className="h-display">Everything you need, <em>nothing</em> you don't.</h1></Reveal>
+          <Reveal><p className="lede lede--light">Six services, one standard. Every engagement starts with a disclosed fee, every outcome is documented in writing. We work for the client — not the commission.</p></Reveal>
+          <Reveal>
+            <div style={{ display: "flex", gap: 12, marginTop: 32, flexWrap: "wrap" }}>
+              <button className="btn btn--gold" onClick={onContact}>Book a Consultation <span className="arrow"><Icon.arrow/></span></button>
+              <button className="btn btn--ghost-light" onClick={onInventory}>View Properties <span className="arrow"><Icon.arrow/></span></button>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Services overview cards */}
+      <section className="section">
+        <div className="shell">
+          <div className="s-head">
+            <div className="s-head__left">
+              <Reveal><span className="eyebrow">— What we offer</span></Reveal>
+              <Reveal><h2 className="h-section">Six services, <em>one</em> standard.</h2></Reveal>
+            </div>
+            <div className="s-head__right">
+              <Reveal><p className="lede">From first property to investment portfolio — we cover the full range of Delhi-NCR real estate needs, always with the same commitment: your interest first, fee disclosed upfront.</p></Reveal>
+            </div>
+          </div>
+
+          <div className="svc-overview">
+            {FULL_SERVICES.map((s, i) => (
+              <Reveal key={s.id}>
+                <div className={"svc-item" + (active === s.id ? " is-open" : "")}>
+                  {/* Left: number + title */}
+                  <div className="svc-item__head" onClick={() => setActive(active === s.id ? null : s.id)}>
+                    <div className="svc-item__num">{s.num}</div>
+                    <div className="svc-item__title-block">
+                      <div className="svc-item__icon">{s.icon}</div>
+                      <div>
+                        <h3 className="svc-item__title">{s.title}</h3>
+                        <div className="svc-item__sub">{s.subtitle}</div>
+                      </div>
+                    </div>
+                    <div className="svc-item__toggle">{active === s.id ? "−" : "+"}</div>
+                  </div>
+
+                  {/* Expanded content */}
+                  {active === s.id && (
+                    <div className="svc-item__body">
+                      <div className="svc-item__content">
+                        <div className="svc-item__img" style={{ backgroundImage: `url(${s.img})` }} />
+                        <div className="svc-item__detail">
+                          <p className="svc-item__desc">{s.description}</p>
+                          <h4 className="svc-item__features-head">What's included</h4>
+                          <ul className="svc-item__features">
+                            {s.features.map((f, fi) => (
+                              <li key={fi}>
+                                <span className="svc-item__check">✓</span>
+                                {f}
+                              </li>
+                            ))}
+                          </ul>
+                          <div style={{ marginTop: 24, display: "flex", gap: 12, flexWrap: "wrap" }}>
+                            <button className="btn btn--primary" onClick={onContact}>{s.cta} <span className="arrow"><Icon.arrow/></span></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Evoque */}
+      <section className="section" style={{ background: "var(--paper)" }}>
+        <div className="shell">
+          <div className="s-head">
+            <div className="s-head__left">
+              <Reveal><span className="eyebrow">— Why choose us</span></Reveal>
+              <Reveal><h2 className="h-section">What makes Evoque Assets <em>different.</em></h2></Reveal>
+            </div>
+          </div>
+          <Reveal stagger className="svc-why-grid">
+            {[
+              { icon: "📋", title: "One fee, disclosed before we start", body: "Fixed consultancy fee, set and signed before we show you a single property. No surprises, no post-deal additions." },
+              { icon: "✅", title: "Only verified listings", body: "Title-searched, encumbrance-checked and society-dues-audited by our team before any property goes live." },
+              { icon: "📝", title: "Every deal in writing", body: "Every offer, counter-offer and concession is documented. You'll never wonder what was agreed." },
+              { icon: "🤝", title: "We never double-dip", body: "We do not earn brokerage from both buyer and seller. Our interest is yours — not a commission from both sides." },
+              { icon: "🎬", title: "Video before site visit", body: "Every listing gets a full walkthrough video — rooms, fixtures, society areas — before you spend time travelling." },
+              { icon: "📍", title: "We stay through handover", body: "Society induction, title transfer, possession punch list — we remain on record until every item is closed." }
+            ].map((w, i) => (
+              <div key={i} className="svc-why-card">
+                <div className="svc-why-card__icon">{w.icon}</div>
+                <h4>{w.title}</h4>
+                <p>{w.body}</p>
+              </div>
+            ))}
+          </Reveal>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="section finalcta">
+        <div className="shell finalcta__inner">
+          <div>
+            <Reveal><span className="eyebrow eyebrow-light">— Ready to begin?</span></Reveal>
+            <Reveal><h2>One conversation. <em>No</em> obligation, no pressure.</h2></Reveal>
+            <Reveal><p>Tell us what you need. We'll tell you honestly if we're the right fit — and if we're not, we'll point you to who is.</p></Reveal>
+            <Reveal>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <button className="btn btn--gold" onClick={onContact}>Book a Free Consultation <span className="arrow"><Icon.arrow/></span></button>
+                <button className="btn btn--ghost-light" onClick={onInventory}>Browse Properties</button>
+              </div>
+            </Reveal>
+          </div>
+          <Reveal>
+            <div className="finalcta__pledge">
+              <h4>The Evoque Assets standard</h4>
+              <ul>
+                <li>Fixed fee disclosed before any work begins.</li>
+                <li>Only personally verified properties on our books.</li>
+                <li>Every negotiation and offer documented in writing.</li>
+                <li>We never charge both buyer and seller.</li>
+                <li>One named consultant from day one to handover.</li>
+              </ul>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+Object.assign(window, { AboutPage, ContactPage, CareersPage, InsightsPage, ServicesPage });
