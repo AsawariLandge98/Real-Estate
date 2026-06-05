@@ -227,7 +227,6 @@ function Header({ route, onNavigate, brandName }) {
           </nav>
 
           <div className="header__cta">
-            <button className="btn btn--ghost btn--sm header__admin-btn" onClick={() => { onNavigate("admin"); setMenuOpen(false); }}>Admin</button>
             <button className="btn btn--gold btn--sm" onClick={() => { onNavigate("contact"); setMenuOpen(false); }}>
               Book Consultation
             </button>

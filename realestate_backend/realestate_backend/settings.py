@@ -1,12 +1,19 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+
+# Load .env file automatically
+load_dotenv(Path(__file__).resolve().parent.parent / '.env')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-evoque-assets-real-estate-secret-key-2026-change-in-prod'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
 
+# ─── Security ────────────────────────────────────────────────────────────────
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-in-production')
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+
+# ─── Apps ─────────────────────────────────────────────────────────────────────
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,20 +58,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'realestate_backend.wsgi.application'
 
+# ─── PostgreSQL Database ──────────────────────────────────────────────────────
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME':     os.environ.get('DB_NAME',     'realestate_db'),
+        'USER':     os.environ.get('DB_USER',     'realestate_user'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'yourpassword'),
+        'HOST':     os.environ.get('DB_HOST',     'localhost'),
+        'PORT':     os.environ.get('DB_PORT',     '5432'),
+        'OPTIONS': {
+            'connect_timeout': 10,
+        },
+        'CONN_MAX_AGE': 60,
     }
 }
 
+# ─── Auth ──────────────────────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = []
 
+# ─── Internationalisation ──────────────────────────────────────────────────────
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
+# ─── Static / Media ───────────────────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
@@ -72,12 +91,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# ─── CORS ──────────────────────────────────────────────────────────────────────
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
+# ─── Session ───────────────────────────────────────────────────────────────────
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 
+# ─── DRF ───────────────────────────────────────────────────────────────────────
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
