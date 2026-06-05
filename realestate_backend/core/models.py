@@ -40,7 +40,7 @@ class Property(models.Model):
     age           = models.CharField(max_length=30, blank=True)
 
     # Media
-    image         = models.URLField(max_length=500, blank=True)
+    image         = models.TextField(blank=True)
     gallery       = models.JSONField(default=list, blank=True)
     badges        = models.JSONField(default=list, blank=True)
     amenities     = models.JSONField(default=list, blank=True)
