@@ -1,0 +1,220 @@
+{% extends "core/base.html" %}
+{% block title %}{{ action }} Property — Evoque Assets{% endblock %}
+{% block page_title %}{{ action }} Property{% endblock %}
+
+{% block content %}
+<a href="{% url 'inventory_list' %}" class="back-link">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+  Back to Inventory
+</a>
+
+<form method="post" id="prop-form">
+  {% csrf_token %}
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;">
+
+    <!-- Main form card -->
+    <div>
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title" style="margin-bottom:20px;">Basic Information</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Title *</label>
+            <input type="text" name="title" value="{{ prop.title|default:'' }}" placeholder="e.g. Sky Residences — 3BHK Corner Unit" required/>
+          </div>
+          <div class="form-group">
+            <label>Locality *</label>
+            <input type="text" name="locality" value="{{ prop.locality|default:'' }}" placeholder="e.g. Sector 150, Noida" required/>
+          </div>
+          <div class="form-group">
+            <label>Property Type *</label>
+            <input type="text" name="property_type" value="{{ prop.property_type|default:'' }}" placeholder="Apartment, Villa, Office Space…" list="prop-type-list" required/>
+            <datalist id="prop-type-list">
+              <option value="Apartment"/><option value="Villa"/><option value="Penthouse"/>
+              <option value="Office Space"/><option value="Plot"/><option value="Studio"/>
+              <option value="Shop"/><option value="Warehouse"/>
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label>Purpose</label>
+            <select name="purpose">
+              <option value="buy" {% if prop.purpose == 'buy' or not prop %}selected{% endif %}>Buy / Sale</option>
+              <option value="rent" {% if prop.purpose == 'rent' %}selected{% endif %}>Rent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select name="category">
+              <option value="residential" {% if prop.category == 'residential' or not prop %}selected{% endif %}>Residential</option>
+              <option value="commercial" {% if prop.category == 'commercial' %}selected{% endif %}>Commercial</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select name="status">
+              <option value="active" {% if prop.status == 'active' or not prop %}selected{% endif %}>Active</option>
+              <option value="draft" {% if prop.status == 'draft' %}selected{% endif %}>Draft</option>
+              <option value="sold" {% if prop.status == 'sold' %}selected{% endif %}>Sold</option>
+              <option value="rented" {% if prop.status == 'rented' %}selected{% endif %}>Rented</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Description</label>
+            <textarea name="description" rows="4" placeholder="Detailed description of the property…">{{ prop.description|default:'' }}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title" style="margin-bottom:20px;">Pricing</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Price (₹) *</label>
+            <input type="number" name="price" value="{{ prop.price|default:'' }}" placeholder="e.g. 24000000" required/>
+          </div>
+          <div class="form-group">
+            <label>Price Label</label>
+            <input type="text" name="price_label" value="{{ prop.price_label|default:'' }}" placeholder="₹2.40 Cr"/>
+          </div>
+          <div class="form-group">
+            <label>Price Period</label>
+            <input type="text" name="price_period" value="{{ prop.price_period|default:'' }}" placeholder="/ month (for rent)"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title" style="margin-bottom:20px;">Property Details</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>BHK / Bedrooms</label>
+            <input type="number" name="bhk" value="{{ prop.bhk|default:'' }}" placeholder="e.g. 3" min="1" max="20"/>
+          </div>
+          <div class="form-group">
+            <label>Area (sq ft)</label>
+            <input type="number" name="area" value="{{ prop.area|default:'' }}" placeholder="e.g. 1850"/>
+          </div>
+          <div class="form-group">
+            <label>Floor</label>
+            <input type="text" name="floor" value="{{ prop.floor|default:'' }}" placeholder="21 / 32"/>
+          </div>
+          <div class="form-group">
+            <label>Facing</label>
+            <input type="text" name="facing" value="{{ prop.facing|default:'' }}" placeholder="East, North-West…" list="facing-list"/>
+            <datalist id="facing-list">
+              <option value="East"/><option value="West"/><option value="North"/>
+              <option value="South"/><option value="North-East"/><option value="North-West"/>
+              <option value="South-East"/><option value="South-West"/>
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label>Furnishing</label>
+            <select name="furnishing">
+              <option value="" {% if not prop.furnishing %}selected{% endif %}>—</option>
+              <option value="unfurnished" {% if prop.furnishing == 'unfurnished' %}selected{% endif %}>Unfurnished</option>
+              <option value="semi-furnished" {% if prop.furnishing == 'semi-furnished' %}selected{% endif %}>Semi-Furnished</option>
+              <option value="fully-furnished" {% if prop.furnishing == 'fully-furnished' %}selected{% endif %}>Fully-Furnished</option>
+              <option value="fully-fitted" {% if prop.furnishing == 'fully-fitted' %}selected{% endif %}>Fully Fitted</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Parking</label>
+            <input type="number" name="parking" value="{{ prop.parking|default:'0' }}" min="0" max="20"/>
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input type="text" name="age" value="{{ prop.age|default:'' }}" placeholder="1 year, New, 5 years…"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title" style="margin-bottom:20px;">Media</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Main Image URL</label>
+            <input type="url" name="image" value="{{ prop.image|default:'' }}" placeholder="https://…" id="main-img-url"/>
+            <div class="form-hint">Paste a direct image URL (Unsplash, Cloudinary, etc.)</div>
+            {% if prop.image %}
+              <img src="{{ prop.image }}" style="margin-top:10px;max-height:120px;border-radius:8px;object-fit:cover;" id="img-preview"/>
+            {% else %}
+              <img id="img-preview" style="display:none;margin-top:10px;max-height:120px;border-radius:8px;object-fit:cover;"/>
+            {% endif %}
+          </div>
+          <div class="form-group full">
+            <label>Gallery URLs <span class="form-hint">(one per line)</span></label>
+            <textarea name="gallery" rows="4" placeholder="https://…&#10;https://…">{% for g in prop.gallery %}{{ g }}
+{% endfor %}</textarea>
+          </div>
+          <div class="form-group full">
+            <label>Badges <span class="form-hint">(comma-separated)</span></label>
+            <input type="text" name="badges" value="{% for b in prop.badges %}{{ b }}{% if not forloop.last %}, {% endif %}{% endfor %}" placeholder="Verified, Ready to Move, Metro 4 min"/>
+          </div>
+          <div class="form-group full">
+            <label>Amenities <span class="form-hint">(one per line)</span></label>
+            <textarea name="amenities" rows="5" placeholder="Clubhouse & Pool&#10;Power backup 100%&#10;24×7 security">{% for a in prop.amenities %}{{ a }}
+{% endfor %}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title" style="margin-bottom:20px;">Consultant</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Consultant Name</label>
+            <input type="text" name="consultant_name" value="{{ prop.consultant_name|default:'' }}" placeholder="Rohan Mehta"/>
+          </div>
+          <div class="form-group">
+            <label>Consultant Title</label>
+            <input type="text" name="consultant_title" value="{{ prop.consultant_title|default:'' }}" placeholder="Senior Consultant — Residential"/>
+          </div>
+          <div class="form-group">
+            <label>Initials</label>
+            <input type="text" name="consultant_initials" value="{{ prop.consultant_initials|default:'' }}" placeholder="RM" maxlength="4"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar options -->
+    <div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:16px;">Publish</div>
+        <div class="checkbox-row" style="margin-bottom:16px;">
+          <input type="checkbox" name="featured" id="featured" {% if prop.featured %}checked{% endif %}/>
+          <label for="featured" style="text-transform:none;letter-spacing:0;font-size:13px;cursor:pointer;">Mark as Featured</label>
+        </div>
+        {% if prop %}
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Property ID</div>
+          <div class="mono" style="font-size:13px;color:var(--gold);margin-bottom:12px;">{{ prop.property_id }}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Created</div>
+          <div class="mono" style="font-size:12px;margin-bottom:12px;">{{ prop.created_at|date:"d M Y H:i" }}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Updated</div>
+          <div class="mono" style="font-size:12px;">{{ prop.updated_at|date:"d M Y H:i" }}</div>
+        {% endif %}
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;">
+          <button type="submit" class="btn btn-gold" style="justify-content:center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Property
+          </button>
+          <a href="{% url 'inventory_list' %}" class="btn btn-outline" style="justify-content:center;">Cancel</a>
+          {% if prop %}
+          <a href="{% url 'property_delete' prop.pk %}" class="btn btn-danger btn-sm" style="justify-content:center;margin-top:8px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
+            Delete Property
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+document.getElementById('main-img-url').addEventListener('input', function() {
+  const p = document.getElementById('img-preview');
+  if (this.value) { p.src = this.value; p.style.display = 'block'; }
+  else p.style.display = 'none';
+});
+</script>
+{% endblock %}

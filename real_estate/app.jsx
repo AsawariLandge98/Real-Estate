@@ -49,6 +49,14 @@ function App() {
 
   const [properties, setProperties] = useState(window.AURUM_DATA.PROPERTIES_SEED);
   const [leads, setLeads] = useState(window.AURUM_DATA.LEADS_SEED);
+  const [apiLoading, setApiLoading] = useState(true);
+
+  // Backend se properties fetch on mount
+  useEffect(() => {
+    window.AURUM_API.fetchProperties()
+      .then((data) => { if (data.length > 0) setProperties(data); setApiLoading(false); })
+      .catch((err) => { console.warn("API unavailable, using seed data:", err.message); setApiLoading(false); });
+  }, []);
 
   const navigate = (r, opts = {}) => {
     setRoute(r);

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Evoque Assets — Admin{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #1F3A5F; --navy-deep: #142A48; --navy-soft: #2C4E7A;
+      --gold: #C9A24B; --gold-soft: #E6CB85; --gold-deep: #A6832F;
+      --bg: #0E1B2E; --surface: #152338; --surface2: #1c2f48;
+      --border: rgba(201,162,75,.18); --border2: rgba(255,255,255,.07);
+      --text: #E8E4DC; --text-muted: rgba(232,228,220,.55);
+      --red: #E05252; --green: #4CAF7C; --amber: #F0A952;
+      --radius: 10px; --radius-sm: 6px;
+      --ff-serif: 'Cormorant Garamond', Georgia, serif;
+      --ff-sans:  'Inter', system-ui, sans-serif;
+      --ff-mono:  'JetBrains Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--ff-sans); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 240px; min-height: 100vh; background: var(--navy-deep);
+      border-right: 1px solid var(--border); display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; z-index: 100;
+    }
+    .sidebar__brand {
+      padding: 28px 24px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-mark {
+      width: 36px; height: 36px; background: var(--gold);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-family: var(--ff-serif); font-size: 20px; color: var(--navy-deep); font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .brand-name { font-family: var(--ff-serif); font-size: 17px; color: var(--text); letter-spacing: .02em; }
+    .brand-sub  { font-size: 10px; color: var(--text-muted); letter-spacing: .12em; text-transform: uppercase; margin-top: 2px; }
+
+    .sidebar__nav { flex: 1; padding: 16px 12px; }
+    .nav-section-label {
+      font-size: 9px; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--text-muted); padding: 12px 12px 6px; font-weight: 500;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: var(--radius-sm);
+      color: var(--text-muted); font-size: 13.5px; font-weight: 400;
+      text-decoration: none; transition: all .15s; margin-bottom: 2px; cursor: pointer;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.06); color: var(--text); }
+    .nav-item.active { background: rgba(201,162,75,.12); color: var(--gold); }
+    .nav-item svg { flex-shrink: 0; }
+    .nav-badge {
+      margin-left: auto; background: var(--red); color: #fff;
+      font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px;
+    }
+
+    .sidebar__footer {
+      padding: 16px 12px; border-top: 1px solid var(--border);
+    }
+    .logout-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: var(--radius-sm);
+      color: var(--text-muted); font-size: 13px; font-weight: 400;
+      text-decoration: none; transition: all .15s; cursor: pointer; background: none; border: none; width: 100%;
+    }
+    .logout-btn:hover { background: rgba(224,82,82,.1); color: var(--red); }
+
+    /* ── MAIN ── */
+    .main { margin-left: 240px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border2);
+      padding: 16px 32px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar h1 { font-family: var(--ff-serif); font-size: 22px; font-weight: 400; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .user-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 24px; padding: 6px 14px 6px 8px;
+      font-size: 12px; color: var(--text-muted);
+    }
+    .user-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--gold); color: var(--navy-deep);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+    }
+
+    /* ── CONTENT ── */
+    .content { padding: 32px; flex: 1; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 24px;
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .card-title { font-family: var(--ff-serif); font-size: 18px; font-weight: 400; }
+
+    /* ── STATS ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 20px 24px;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--accent-color, var(--gold));
+    }
+    .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+    .stat-value { font-family: var(--ff-serif); font-size: 36px; color: var(--text); line-height: 1; }
+    .stat-sub   { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      text-align: left; padding: 10px 14px; font-size: 10.5px; font-weight: 500;
+      letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted);
+      border-bottom: 1px solid var(--border2); white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border2); transition: background .1s; }
+    tbody tr:hover { background: rgba(255,255,255,.03); }
+    tbody td { padding: 12px 14px; color: var(--text); vertical-align: middle; }
+    tbody tr:last-child { border-bottom: none; }
+
+    /* ── PILLS ── */
+    .pill {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+    }
+    .pill-new      { background: rgba(201,162,75,.15); color: var(--gold); }
+    .pill-contacted{ background: rgba(44,78,122,.4);    color: #7BA8D9; }
+    .pill-closed   { background: rgba(76,175,124,.12);  color: var(--green); }
+    .pill-active   { background: rgba(76,175,124,.12);  color: var(--green); }
+    .pill-sold     { background: rgba(224,82,82,.12);   color: var(--red); }
+    .pill-rented   { background: rgba(201,162,75,.15);  color: var(--gold); }
+    .pill-draft    { background: rgba(255,255,255,.07); color: var(--text-muted); }
+    .pill-buy      { background: rgba(44,78,122,.4);    color: #7BA8D9; }
+    .pill-rent     { background: rgba(201,162,75,.15);  color: var(--gold); }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
+      cursor: pointer; border: none; text-decoration: none; transition: all .15s; white-space: nowrap;
+    }
+    .btn-gold { background: var(--gold); color: var(--navy-deep); }
+    .btn-gold:hover { background: var(--gold-soft); }
+    .btn-outline {
+      background: transparent; color: var(--text-muted);
+      border: 1px solid var(--border2);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,.05); color: var(--text); }
+    .btn-danger { background: rgba(224,82,82,.12); color: var(--red); border: 1px solid rgba(224,82,82,.2); }
+    .btn-danger:hover { background: rgba(224,82,82,.2); }
+    .btn-sm { padding: 5px 12px; font-size: 12px; }
+    .btn-icon { padding: 7px; border-radius: var(--radius-sm); background: var(--surface2); border: 1px solid var(--border2); color: var(--text-muted); cursor: pointer; transition: all .15s; }
+    .btn-icon:hover { color: var(--text); }
+
+    /* ── FORM ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; }
+    input, select, textarea {
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13.5px;
+      color: var(--text); font-family: var(--ff-sans); transition: border-color .15s;
+      outline: none; width: 100%;
+    }
+    input:focus, select:focus, textarea:focus { border-color: rgba(201,162,75,.5); }
+    select option { background: var(--surface); }
+    textarea { resize: vertical; min-height: 80px; }
+    .form-hint { font-size: 11px; color: var(--text-muted); }
+    .checkbox-row { display: flex; align-items: center; gap: 10px; }
+    .checkbox-row input { width: auto; }
+
+    /* ── FILTERS BAR ── */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px;
+    }
+    .filter-bar .form-group { gap: 4px; min-width: 120px; }
+    .filter-bar label { font-size: 10px; }
+    .filter-bar input, .filter-bar select { padding: 7px 10px; font-size: 12.5px; }
+    .filter-bar-actions { margin-left: auto; display: flex; gap: 8px; }
+
+    /* ── ALERTS ── */
+    .alert {
+      padding: 12px 18px; border-radius: var(--radius-sm); margin-bottom: 20px;
+      font-size: 13px; border: 1px solid;
+    }
+    .alert-success { background: rgba(76,175,124,.1); color: var(--green); border-color: rgba(76,175,124,.2); }
+    .alert-error   { background: rgba(224,82,82,.1);  color: var(--red);   border-color: rgba(224,82,82,.2); }
+
+    /* ── LOGIN ── */
+    .login-page { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+    .login-card {
+      width: 400px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 14px; padding: 40px;
+    }
+    .login-brand { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
+    .login-title { font-family: var(--ff-serif); font-size: 26px; margin-bottom: 8px; }
+    .login-sub   { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+    .login-card .form-group { margin-bottom: 16px; }
+    .login-card .btn-gold { width: 100%; justify-content: center; padding: 12px; }
+    .login-hint { text-align: center; margin-top: 20px; font-size: 11px; color: var(--text-muted); font-family: var(--ff-mono); }
+    .login-lock { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 16px; }
+
+    /* ── MISC ── */
+    .empty-state {
+      text-align: center; padding: 60px 20px;
+      color: var(--text-muted); font-size: 14px;
+    }
+    .empty-state svg { display: block; margin: 0 auto 16px; opacity: .3; }
+    .actions-col { display: flex; gap: 6px; align-items: center; }
+    .mono { font-family: var(--ff-mono); font-size: 11px; color: var(--text-muted); }
+    .text-muted { color: var(--text-muted); }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .ml-auto { margin-left: auto; }
+    .mb-4 { margin-bottom: 16px; }
+    .mb-6 { margin-bottom: 24px; }
+    .mt-4 { margin-top: 16px; }
+    .section-title { font-family: var(--ff-serif); font-size: 16px; margin-bottom: 16px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .prop-img { width: 52px; height: 40px; border-radius: 6px; object-fit: cover; background: var(--surface2); }
+    .inq-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .dot-new { background: var(--gold); }
+    .dot-contacted { background: #7BA8D9; }
+    .dot-closed { background: var(--green); }
+    .back-link { font-size: 12px; color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+    .back-link:hover { color: var(--text); }
+    .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .detail-item label { font-size: 10px; }
+    .detail-value { font-size: 14px; color: var(--text); margin-top: 4px; }
+    .confirm-box { max-width: 480px; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: rgba(201,162,75,.1); color: var(--gold); margin: 2px; }
+  </style>
+</head>
+<body>
+{% block body %}
+{% if user.is_authenticated %}
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar__brand">
+      <div class="brand-mark">A</div>
+      <div class="brand-name">Evoque Assets</div>
+      <div class="brand-sub">Admin Console</div>
+    </div>
+    <div class="sidebar__nav">
+      <div class="nav-section-label">Navigation</div>
+      <a href="{% url 'admin_dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'admin_dashboard' or request.resolver_match.url_name == 'admin_root' %}active{% endif %}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="{% url 'inventory_list' %}" class="nav-item {% if 'inventory' in request.resolver_match.url_name %}active{% endif %}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Inventory
+      </a>
+      <a href="{% url 'inquiry_list' %}" class="nav-item {% if 'inquiry' in request.resolver_match.url_name %}active{% endif %}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Inquiries
+        {% if new_inq_count %}<span class="nav-badge">{{ new_inq_count }}</span>{% endif %}
+      </a>
+      <a href="{% url 'property_add' %}" class="nav-item {% if request.resolver_match.url_name == 'property_add' %}active{% endif %}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Add Property
+      </a>
+    </div>
+    <div class="sidebar__footer">
+      <div class="user-chip" style="margin-bottom:10px; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,.04); border:1px solid var(--border2);">
+        <div class="user-avatar">{{ user.username|first|upper }}</div>
+        <div>
+          <div style="font-size:12px;color:var(--text);">{{ user.username }}</div>
+          <div style="font-size:10px;color:var(--text-muted);">Administrator</div>
+        </div>
+      </div>
+      <a href="{% url 'admin_logout' %}" class="logout-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+      <div class="topbar-right">
+        <div style="font-size:11px;color:var(--text-muted);font-family:var(--ff-mono);">
+          {% now "D, d M Y H:i" %}
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+{% else %}
+  {% block body_auth %}{% endblock %}
+{% endif %}
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,139 @@
+{% extends "core/base.html" %}
+{% block title %}Inquiry #{{ inq.pk }} — Evoque Assets{% endblock %}
+{% block page_title %}Inquiry #{{ inq.pk }}{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+  <a href="{% url 'inquiry_list' %}" class="back-link" style="margin-bottom:0;">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    All Inquiries
+  </a>
+  <a href="{% url 'inquiry_delete' inq.pk %}" class="btn btn-danger btn-sm">Delete</a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;">
+  <div>
+    <!-- Contact Info -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title" style="margin-bottom:16px;">Contact Information</div>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>Full Name</label>
+          <div class="detail-value" style="font-size:16px;font-weight:500;">{{ inq.name }}</div>
+        </div>
+        <div class="detail-item">
+          <label>Email Address</label>
+          <div class="detail-value">
+            <a href="mailto:{{ inq.email }}" style="color:var(--gold);text-decoration:none;">{{ inq.email }}</a>
+          </div>
+        </div>
+        <div class="detail-item">
+          <label>Phone</label>
+          <div class="detail-value">
+            {% if inq.phone %}
+              <a href="tel:{{ inq.phone }}" style="color:var(--gold);text-decoration:none;">{{ inq.phone }}</a>
+            {% else %}—{% endif %}
+          </div>
+        </div>
+        <div class="detail-item">
+          <label>Source</label>
+          <div class="detail-value">{{ inq.get_source_display }}</div>
+        </div>
+        <div class="detail-item">
+          <label>Received</label>
+          <div class="detail-value mono" style="font-size:13px;">{{ inq.created_at|date:"d M Y, H:i" }}</div>
+        </div>
+        <div class="detail-item">
+          <label>Property</label>
+          <div class="detail-value">
+            {% if inq.property %}
+              <a href="{% url 'property_detail' inq.property.pk %}" style="color:var(--gold);text-decoration:none;">
+                {{ inq.property.property_id }} — {{ inq.property.title|truncatechars:30 }}
+              </a>
+            {% elif inq.property_ref %}
+              <span class="mono">{{ inq.property_ref }}</span>
+            {% else %}
+              <span class="text-muted">General inquiry</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message -->
+    {% if inq.message %}
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title" style="margin-bottom:14px;">Message</div>
+      <div style="font-size:13.5px;line-height:1.75;color:var(--text-muted);background:var(--surface2);border-radius:8px;padding:16px;">{{ inq.message }}</div>
+    </div>
+    {% endif %}
+
+    <!-- Update form -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px;">Update Inquiry</div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Status</label>
+            <select name="status">
+              <option value="new" {% if inq.status == 'new' %}selected{% endif %}>New</option>
+              <option value="contacted" {% if inq.status == 'contacted' %}selected{% endif %}>Contacted</option>
+              <option value="closed" {% if inq.status == 'closed' %}selected{% endif %}>Closed</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Internal Notes</label>
+            <textarea name="notes" rows="4" placeholder="Add notes about follow-up, call outcome, etc.">{{ inq.notes }}</textarea>
+          </div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:8px;">
+          <button type="submit" class="btn btn-gold">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Changes
+          </button>
+          <a href="{% url 'inquiry_list' %}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title" style="margin-bottom:14px;">Status</div>
+      <div style="margin-bottom:16px;">
+        <span class="pill pill-{{ inq.status }}" style="font-size:13px;padding:6px 14px;">{{ inq.get_status_display }}</span>
+      </div>
+      <div class="detail-item" style="margin-bottom:12px;">
+        <label>Created</label>
+        <div class="mono" style="margin-top:4px;font-size:12px;">{{ inq.created_at|date:"d M Y H:i" }}</div>
+      </div>
+      <div class="detail-item">
+        <label>Last Updated</label>
+        <div class="mono" style="margin-top:4px;font-size:12px;">{{ inq.updated_at|date:"d M Y H:i" }}</div>
+      </div>
+    </div>
+
+    {% if inq.notes %}
+    <div class="card">
+      <div class="card-title" style="margin-bottom:10px;">Notes</div>
+      <div style="font-size:12.5px;line-height:1.6;color:var(--text-muted);">{{ inq.notes }}</div>
+    </div>
+    {% endif %}
+
+    {% if inq.property %}
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title" style="margin-bottom:12px;">Property</div>
+      {% if inq.property.image %}
+        <img src="{{ inq.property.image }}" style="width:100%;height:100px;object-fit:cover;border-radius:6px;margin-bottom:10px;" alt=""/>
+      {% endif %}
+      <div style="font-weight:500;font-size:13px;margin-bottom:4px;">{{ inq.property.title|truncatechars:40 }}</div>
+      <div class="mono" style="color:var(--gold);margin-bottom:6px;">{{ inq.property.property_id }}</div>
+      <div class="text-muted" style="font-size:12px;margin-bottom:12px;">{{ inq.property.locality }}</div>
+      <a href="{% url 'property_detail' inq.property.pk %}" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;">View Property</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

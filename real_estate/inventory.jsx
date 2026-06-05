@@ -146,10 +146,22 @@ function Inventory({ properties, onOpen, onContact }) {
 function PropertyDetail({ property, onBack, onContact }) {
   const p = property;
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
   const [form, setForm] = useState({ name: "", phone: "", email: "", message: `I'd like to visit ${p.title} (${p.id}). Please call me to set a time.` });
   const submit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setSubmitError(null);
+    window.AURUM_API.submitInquiry({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      message: form.message,
+      property_ref: p.id,
+    })
+      .then(() => { setSubmitted(true); setSubmitting(false); })
+      .catch((err) => { console.error(err); setSubmitError("Submit nahi ho paya. Dobara try karo."); setSubmitting(false); });
   };
 
   const gallery = (p.gallery && p.gallery.length ? p.gallery : [p.image]).slice(0, 5);
@@ -271,7 +283,10 @@ function PropertyDetail({ property, onBack, onContact }) {
                   <label>Message</label>
                   <textarea rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
                 </div>
-                <button className="btn btn--primary" type="submit">Request a callback <span className="arrow"><Icon.arrow/></span></button>
+                {submitError && <div style={{color:"#E05252",fontSize:"12px",marginBottom:"8px",padding:"8px 12px",background:"rgba(224,82,82,.1)",borderRadius:"6px"}}>{submitError}</div>}
+                <button className="btn btn--primary" type="submit" disabled={submitting} style={submitting?{opacity:0.7,cursor:"not-allowed"}:{}}>
+                  {submitting ? "Sending..." : "Request a callback"} <span className="arrow"><Icon.arrow/></span>
+                </button>
                 <div style={{ fontFamily: "var(--ff-mono)", fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "var(--slate-soft)", marginTop: 8, textAlign: "center" }}>
                   Or call directly · +91 120 4567 890
                 </div>

@@ -199,9 +199,29 @@ function AboutPage({ onContact }) {
 function ContactPage() {
   const [form, setForm] = useState({ name: "", phone: "", email: "", service: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
   const [activeService, setActiveService] = useState("");
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
-  const submit = (e) => { e.preventDefault(); setSubmitted(true); };
+
+  const submit = (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError(null);
+    window.AURUM_API.submitInquiry({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      message: `Service: ${form.service || activeService || "General"}\n\n${form.message}`,
+      property_ref: "",
+    })
+      .then(() => { setSubmitted(true); setSubmitting(false); })
+      .catch((err) => {
+        console.error("Inquiry submit failed:", err);
+        setSubmitError("Submit nahi ho paya. Please dobara try karo.");
+        setSubmitting(false);
+      });
+  };
 
   const SERVICES = [
     { value: "buy",      emoji: "🏠", label: "Buy" },
@@ -434,7 +454,8 @@ function ContactPage() {
                     />
                   </div>
 
-                  <button className="cpage__submit" type="submit">
+                  {submitError && <div style={{color:"#E05252",fontSize:"13px",marginBottom:"10px",padding:"10px",background:"rgba(224,82,82,.1)",borderRadius:"6px"}}>{submitError}</div>}
+                  <button className="cpage__submit" type="submit" disabled={submitting} style={submitting ? {opacity:0.7,cursor:"not-allowed"} : {}}>
                     Send enquiry
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
                       <path d="M5 12h14M13 5l7 7-7 7"/>
