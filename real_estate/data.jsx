@@ -4,7 +4,14 @@
 // Static data (INTERIORS, VIDEOS, TESTIMONIALS, NAV_ITEMS) waise hi rehta hai.
 
 // ─── API CONFIG ────────────────────────────────────────────────────────────────
-const API_BASE = "http://127.0.0.1:8000/admin-panel";
+// Same-origin by default: the frontend and the Django backend are served from
+// the same host (Nginx serves these static files and reverse-proxies
+// /admin-panel/ to Gunicorn), so a relative path works on any IP, port or
+// domain — no rebuild needed when the address changes.
+// For local dev against a separately-run backend, set:
+//   window.API_BASE_OVERRIDE = "http://127.0.0.1:8000/admin-panel";
+// in the browser console (or a <script> before this file) and reload.
+const API_BASE = (typeof window !== "undefined" && window.API_BASE_OVERRIDE) || "/admin-panel";
 
 // API se property data ko frontend format mein convert karta hai
 function mapProperty(p) {
