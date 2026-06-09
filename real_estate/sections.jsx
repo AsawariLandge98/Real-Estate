@@ -201,7 +201,7 @@ function PropertyCard({ p, onClick, tiltOn = false }) {
         <div className="prop-card__locality"><Icon.pin/> {p.locality}</div>
         <div className="prop-card__specs">
           {p.bhk != null && <span><strong>{p.bhk}</strong>BHK</span>}
-          <span><strong>{p.area.toLocaleString("en-IN")}</strong>{p.areaUnit || "sqft"}</span>
+          {p.area != null && <span><strong>{p.area.toLocaleString("en-IN")}</strong>{p.areaUnit || "sqft"}</span>}
           <span><strong>{p.propertyType}</strong></span>
         </div>
       </div>

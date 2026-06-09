@@ -208,7 +208,7 @@ function PropertyDetail({ property, onBack, onContact }) {
 
             <div className="pd__specs">
               {p.bhk != null && <div><div className="pd__specs__label">Bedrooms</div><div className="pd__specs__value">{p.bhk} BHK</div></div>}
-              <div><div className="pd__specs__label">{p.areaUnit === "sq yd" ? "Plot size" : "Built-up"}</div><div className="pd__specs__value">{p.area.toLocaleString("en-IN")} <span style={{ fontSize: 13, color: "var(--slate-soft)", fontFamily: "var(--ff-sans)" }}>{p.areaUnit || "sqft"}</span></div></div>
+              {p.area != null && <div><div className="pd__specs__label">{p.areaUnit === "sq yd" ? "Plot size" : "Built-up"}</div><div className="pd__specs__value">{p.area.toLocaleString("en-IN")} <span style={{ fontSize: 13, color: "var(--slate-soft)", fontFamily: "var(--ff-sans)" }}>{p.areaUnit || "sqft"}</span></div></div>}
               {p.floor && <div><div className="pd__specs__label">Floor</div><div className="pd__specs__value">{p.floor}</div></div>}
               <div><div className="pd__specs__label">Facing</div><div className="pd__specs__value">{p.facing}</div></div>
             </div>
