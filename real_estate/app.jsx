@@ -24,6 +24,32 @@ const HERO_IMAGES = {
   penthouse: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=75"
 };
 
+// ─── URL routing ──────────────────────────────────────────────────────────
+// The app keeps its current "page" in React state but mirrors it to the URL
+// via the History API, so /properties, /services, etc. are real, shareable,
+// refresh-safe paths. Nginx already falls back to index.html for any path
+// (try_files ... /index.html), so a hard refresh on a deep link works.
+const ROUTE_TO_PATH = {
+  home: "/", services: "/services", inventory: "/properties",
+  about: "/about", insights: "/insights", contact: "/contact", admin: "/admin"
+};
+const PATH_TO_ROUTE = {
+  "/": "home", "/services": "services", "/properties": "inventory",
+  "/about": "about", "/insights": "insights", "/contact": "contact", "/admin": "admin"
+};
+
+function parseLocation() {
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  const detail = path.match(/^\/properties\/(.+)$/);
+  if (detail) return { route: "detail", propertyId: decodeURIComponent(detail[1]) };
+  return { route: PATH_TO_ROUTE[path] || "home", propertyId: null };
+}
+
+function routeToPath(route, propertyId) {
+  if (route === "detail" && propertyId) return "/properties/" + encodeURIComponent(propertyId);
+  return ROUTE_TO_PATH[route] || "/";
+}
+
 function applyTweaks(t) {
   const root = document.documentElement;
   const p = PALETTES[t.palette] || PALETTES["navy-gold"];
@@ -42,10 +68,22 @@ function App() {
 
   useEffect(() => { applyTweaks(tweaks); }, [tweaks.palette, tweaks.headingFont, tweaks.bodyFont]);
 
-  // Routing state
-  const [route, setRoute] = useState("home");
-  const [propertyId, setPropertyId] = useState(null);
+  // Routing state — initialised from the current URL so deep links / refresh work.
+  const initialLoc = parseLocation();
+  const [route, setRoute] = useState(initialLoc.route);
+  const [propertyId, setPropertyId] = useState(initialLoc.propertyId);
   const [adminAuthed, setAdminAuthed] = useState(false);
+
+  // Keep React state in sync when the user presses Back / Forward.
+  useEffect(() => {
+    const onPop = () => {
+      const loc = parseLocation();
+      setRoute(loc.route);
+      setPropertyId(loc.propertyId);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   const [properties, setProperties] = useState(window.AURUM_DATA.PROPERTIES_SEED);
   const [leads, setLeads] = useState(window.AURUM_DATA.LEADS_SEED);
@@ -59,6 +97,8 @@ function App() {
   }, []);
 
   const navigate = (r, opts = {}) => {
+    const path = routeToPath(r);
+    if (window.location.pathname !== path) window.history.pushState({}, "", path);
     setRoute(r);
     if (r === "home" && opts.anchor) {
       setTimeout(() => document.getElementById(opts.anchor)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
@@ -68,6 +108,7 @@ function App() {
   };
 
   const openProperty = (id) => {
+    window.history.pushState({}, "", routeToPath("detail", id));
     setPropertyId(id);
     setRoute("detail");
     window.scrollTo({ top: 0 });
@@ -129,14 +170,14 @@ function App() {
         <TweakToggle label="Depth effects" value={tweaks.depthEffects} onChange={(v) => setTweak("depthEffects", v)} />
       </TweakSection>
       <TweakSection title="Quick navigation">
-        <TweakButton label="View · Home" onClick={() => { setRoute("home"); window.scrollTo({ top: 0 }); }} />
-        <TweakButton label="View · Services" onClick={() => { setRoute("services"); window.scrollTo({ top: 0 }); }} />
-        <TweakButton label="View · Inventory" onClick={() => { setRoute("inventory"); window.scrollTo({ top: 0 }); }} />
-        <TweakButton label="View · Property detail" onClick={() => { setPropertyId("AC-1042"); setRoute("detail"); window.scrollTo({ top: 0 }); }} />
-        <TweakButton label="View · About" onClick={() => { setRoute("about"); window.scrollTo({ top: 0 }); }} />
-        <TweakButton label="View · Contact" onClick={() => { setRoute("contact"); window.scrollTo({ top: 0 }); }} />
-        <TweakButton label="View · Insights" onClick={() => { setRoute("insights"); window.scrollTo({ top: 0 }); }} />
-        <TweakButton label="View · Admin panel" onClick={() => { setRoute("admin"); window.scrollTo({ top: 0 }); }} />
+        <TweakButton label="View · Home" onClick={() => navigate("home")} />
+        <TweakButton label="View · Services" onClick={() => navigate("services")} />
+        <TweakButton label="View · Inventory" onClick={() => navigate("inventory")} />
+        <TweakButton label="View · Property detail" onClick={() => openProperty("AC-1042")} />
+        <TweakButton label="View · About" onClick={() => navigate("about")} />
+        <TweakButton label="View · Contact" onClick={() => navigate("contact")} />
+        <TweakButton label="View · Insights" onClick={() => navigate("insights")} />
+        <TweakButton label="View · Admin panel" onClick={() => navigate("admin")} />
       </TweakSection>
     </TweaksPanel>
   );
@@ -147,12 +188,12 @@ function App() {
         {adminAuthed
           ? <AdminDashboard
               properties={properties} leads={leads}
-              onExit={() => { setRoute("home"); setAdminAuthed(false); window.scrollTo({ top: 0 }); }}
+              onExit={() => { navigate("home"); setAdminAuthed(false); }}
               onAddProperty={handleAddProperty} onEditProperty={handleEditProperty}
               onDeleteProperty={handleDeleteProperty} onLeadStatus={handleLeadStatus}
               brandName={tweaks.brandName}
             />
-          : <AdminLogin onLogin={() => setAdminAuthed(true)} onExit={() => setRoute("home")} brandName={tweaks.brandName} />}
+          : <AdminLogin onLogin={() => setAdminAuthed(true)} onExit={() => navigate("home")} brandName={tweaks.brandName} />}
         {TweaksUI}
       </>
     );
